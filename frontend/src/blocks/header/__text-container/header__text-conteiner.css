@@ -1,0 +1,12 @@
+.header__text-container {
+  display: flex;
+  flex-direction: row;
+  column-gap: 50px;
+}
+
+@media screen and (max-width: 894px) {
+  .header__text-container {
+    flex-direction: column;
+    row-gap: 10px;
+  }
+}

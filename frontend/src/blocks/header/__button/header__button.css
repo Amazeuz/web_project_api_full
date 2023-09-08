@@ -1,0 +1,13 @@
+.header__button {
+  color: white;
+  background-color: black;
+  border: none;
+  text-align: center;
+  margin: auto;
+  cursor: pointer;
+}
+
+.header__button:hover {
+  transition: opacity ease .5s;
+  opacity: 0.5;
+}
