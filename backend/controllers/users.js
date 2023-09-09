@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 function send404() {
@@ -30,15 +31,22 @@ const getUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const { email, name, about, avatar } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+  bcrypt.hash(req.body.password, 10)
+    .then((hash) => User.create({ email, password: hash, name, about, avatar }))
+    .then((user) => {
+      res.send({
+        email: email,
+        name: name,
+        about: about,
+        _id: user._id
+      })
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ocorreu ao criar usuário: Dados passados são inválidos' });
+        return res.status(400).send({ message: `Ocorreu ao criar usuário: Dados passados são inválidos: ${err}` });
       }
-
       res.status(500).send({ message: `Não foi possível criar usuário: ${err}` });
     });
 };
