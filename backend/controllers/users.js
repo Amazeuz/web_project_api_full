@@ -31,6 +31,16 @@ const getUser = (req, res) => {
     });
 };
 
+const getUserInfo = (req, res) => {
+  User.findById(req.user._id)
+    .then(user => {
+      res.status(200).send({ user })
+    })
+    .catch(err => {
+      res.status(401).send({ message: err })
+    })
+}
+
 const createUser = (req, res) => {
   const { email, name, about, avatar } = req.body;
 
@@ -113,5 +123,5 @@ const updateUserAvatar = (req, res) => {
 };
 
 module.exports = {
-  getAllUsers, getUser, createUser, login, updateUser, updateUserAvatar,
+  getAllUsers, getUser, getUserInfo, createUser, login, updateUser, updateUserAvatar,
 };
