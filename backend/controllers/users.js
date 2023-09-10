@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken')
 const User = require('../models/user');
 
 function send404() {
@@ -51,6 +52,24 @@ const createUser = (req, res) => {
     });
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({
+        _id: user._id
+      },
+        'some-secret-key',
+        { expiresIn: '7d' }
+      );
+      res.send({ token })
+    })
+    .catch(err => {
+      res.status(401).send({ message: err.message })
+    })
+}
+
 const updateUser = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
@@ -94,5 +113,5 @@ const updateUserAvatar = (req, res) => {
 };
 
 module.exports = {
-  getAllUsers, getUser, createUser, updateUser, updateUserAvatar,
+  getAllUsers, getUser, createUser, login, updateUser, updateUserAvatar,
 };

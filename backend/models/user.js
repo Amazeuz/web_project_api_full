@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -36,5 +37,22 @@ const userSchema = new mongoose.Schema({
     default: 'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg'
   },
 });
+
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+  return this.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Senha ou e=mail incorreto'))
+      }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            return Promise.reject(new Error('Senha ou e=mail incorreto'))
+          }
+
+          return user;
+        })
+    })
+}
 
 module.exports = mongoose.model('user', userSchema);
