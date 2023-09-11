@@ -34,7 +34,7 @@ const getUser = (req, res) => {
 const getUserInfo = (req, res) => {
   User.findById(req.user._id)
     .then(user => {
-      res.status(200).send({ user })
+      res.send({ data: user })
     })
     .catch(err => {
       res.status(401).send({ message: err })

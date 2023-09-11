@@ -8,28 +8,19 @@ const cardsRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
 const { createUser, login } = require('./controllers/users')
 
-const { PORT = 5000 } = process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: 'http://localhost:3000',
+  methods: 'GET'
 }))
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64a47811a6370a4ccb5e494a',
-  };
-
-  next();
-});
 
 app.post('/signup', createUser);
 app.post('/signin', login);
-
-app.use(auth)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
