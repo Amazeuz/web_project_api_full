@@ -13,16 +13,29 @@ const getAllCards = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  const cardId = req.params.cardId
+
+  Card.findById(cardId)
     .orFail(() => {
       send404();
     })
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card.owner.valueOf() === req.user._id) {
+        res.send({ data: card })
+        return Card.findByIdAndRemove(cardId)
+      }
+      else {
+        res.status(403).send({ message: 'Você não tem autorização para deletar esse cartão' })
+      }
+    })
     .catch((err) => {
+      console.log(err)
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Id de cartão inválido' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
+      } else if (err.name === 'Forbidden') {
+
       } else {
         res.status(500).send({ message: `Ocorreu um erro ao deletar cartão: ${err}` });
       }
@@ -36,7 +49,7 @@ const createCard = (req, res) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ocorreu ao criar o cartão: Dados passados são inválidos' });
+        res.status(400).send({ message: 'Ocorreu ao criar o cartão: Dados passados são inválidos' + err });
       }
       res.status(500).send({ message: `Não foi possível criar cartão: ${err}` });
     });
