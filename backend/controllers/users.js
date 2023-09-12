@@ -81,15 +81,24 @@ const login = (req, res) => {
 }
 
 const updateUser = (req, res) => {
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name: req.body.name, about: req.body.about },
-    { new: true },
-  )
+  const userId = req.params.id !== 'me' ? req.params.id : req.user._id
+  User.findById(userId)
     .orFail(() => {
       send404();
     })
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (userId === req.user._id) {
+        res.send({ data: user })
+        return User.findByIdAndUpdate(
+          req.user._id,
+          { name: req.body.name, about: req.body.about },
+          { new: true },
+        )
+      }
+      else {
+        res.status(403).send({ message: 'Você não tem permissão para atualizar as informações desse usuário' })
+      }
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Ocorreu ao atualizar dados do usuário: Dados passados são inválidos' });
@@ -102,15 +111,24 @@ const updateUser = (req, res) => {
 };
 
 const updateUserAvatar = (req, res) => {
-  User.findByIdAndUpdate(
-    req.user._id,
-    { avatar: req.body.avatar },
-    { new: true, runValidators: true },
-  )
+  const userId = req.params.id !== 'me' ? req.params.id : req.user._id
+  User.findById(userId)
     .orFail(() => {
       send404();
     })
-    .then((user) => res.send({ data: user.avatar }))
+    .then((user) => {
+      if (userId === req.user._id) {
+        res.send({ data: user })
+        return User.findByIdAndUpdate(
+          req.user._id,
+          { avatar: req.body.avatar },
+          { new: true, runValidators: true },
+        )
+      }
+      else {
+        res.status(403).send({ message: 'Você não tem permissão para atualizar as informações desse usuário' })
+      }
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Ocorreu ao atualizar avatar de usuário: Dados passados são inválidos' });

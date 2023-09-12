@@ -29,13 +29,10 @@ const deleteCard = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err)
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Id de cartão inválido' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
-      } else if (err.name === 'Forbidden') {
-
       } else {
         res.status(500).send({ message: `Ocorreu um erro ao deletar cartão: ${err}` });
       }
