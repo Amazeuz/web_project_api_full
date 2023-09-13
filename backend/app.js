@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const auth = require('./middleware/auth')
 const cors = require('cors')
+const errorHandler = require('./middleware/error-handler')
 const bodyParser = require('body-parser');
 const cardsRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
@@ -31,7 +32,10 @@ app.get('*', (req, res) => {
   res.send({ message: 'A solicitação não foi encontrada' });
 });
 
+
 mongoose.connect('mongodb://127.0.0.1:27017/aroundb')
   .catch((err) => console.error(`Erro de conexão ao MongoDB: ${err}`));
+
+app.use(errorHandler);
 
 app.listen(PORT);

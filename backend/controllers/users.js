@@ -1,52 +1,51 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
+const { isValidObjectId } = require('mongoose');
 const User = require('../models/user');
+const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError')
+const NotFoundError = require('../errors/NotFoundError')
 
-function send404() {
-  const error = new Error('Nenhum usuário encontrado com esse id');
-  error.statusCode = 404;
-  throw error;
-}
-
-const getAllUsers = (req, res) => {
+const getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ message: `Ocorreu um erro ao carregar todos os usuários: ${err}` }));
+    .catch(err => next(err));
 };
 
-const getUser = (req, res) => {
-  User.findById(req.params.id)
-    .orFail(() => {
-      send404();
-    })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Id de usuário inválido' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: `Ocorreu um erro ao encontrar usuário: ${err}` });
+const getUser = (req, res, next) => {
+  const userId = req.params.id;
+
+  if (!isValidObjectId(userId)) {
+    throw new BadRequestError('Dados passados são inválidos')
+  }
+
+  User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Usuário com ID correspondente não encontrado')
       }
-    });
-};
-
-const getUserInfo = (req, res) => {
-  User.findById(req.user._id)
-    .then(user => {
       res.send({ data: user })
     })
-    .catch(err => {
-      res.status(401).send({ message: err })
-    })
+    .catch(err => next(err))
+};
+
+const getUserInfo = (req, res, next) => {
+  User.findById(req.user._id)
+    .then(user => res.send({ data: user }))
+    .catch(err => next(err))
 }
 
-const createUser = (req, res) => {
+
+
+const createUser = (req, res, next) => {
   const { email, name, about, avatar } = req.body;
 
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({ email, password: hash, name, about, avatar }))
     .then((user) => {
+      if (!user) {
+        throw new BadRequestError('Ocorreu um erro ao criar usuário: Dados passados são inválidos')
+      }
       res.send({
         email: email,
         name: name,
@@ -54,15 +53,10 @@ const createUser = (req, res) => {
         _id: user._id
       })
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: `Ocorreu ao criar usuário: Dados passados são inválidos: ${err}` });
-      }
-      res.status(500).send({ message: `Não foi possível criar usuário: ${err}` });
-    });
+    .catch(err => next(err))
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findUserByCredentials(email, password)
@@ -75,18 +69,21 @@ const login = (req, res) => {
       );
       res.send({ token })
     })
-    .catch(err => {
-      res.status(401).send({ message: err.message })
-    })
+    .catch(err => next(err))
 }
 
-const updateUser = (req, res) => {
-  const userId = req.params.id !== 'me' ? req.params.id : req.user._id
+const updateUser = (req, res, next) => {
+  const userId = req.params.id !== 'me' ? req.params.id : req.user._id;
+
+  if (!isValidObjectId(userId)) {
+    throw new BadRequestError('Dados passados são inválidos')
+  }
+
   User.findById(userId)
-    .orFail(() => {
-      send404();
-    })
     .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Usuário com ID correspondente não encontrado')
+      }
       if (userId === req.user._id) {
         res.send({ data: user })
         return User.findByIdAndUpdate(
@@ -96,27 +93,25 @@ const updateUser = (req, res) => {
         )
       }
       else {
-        res.status(403).send({ message: 'Você não tem permissão para atualizar as informações desse usuário' })
+        throw new ForbiddenError('Você não tem permissão para atualizar as informações desse usuário')
       }
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ocorreu ao atualizar dados do usuário: Dados passados são inválidos' });
-      } if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: `Erro ao atualizar informações do usuário: ${err}` });
-      }
-    });
+    .catch(err => next(err))
 };
 
-const updateUserAvatar = (req, res) => {
-  const userId = req.params.id !== 'me' ? req.params.id : req.user._id
+
+const updateUserAvatar = (req, res, next) => {
+  const userId = req.params.id !== 'me' ? req.params.id : req.user._id;
+
+  if (!isValidObjectId(userId)) {
+    throw new BadRequestError('Dados passados são inválidos')
+  }
+
   User.findById(userId)
-    .orFail(() => {
-      send404();
-    })
     .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Usuário com ID correspondente não encontrado')
+      }
       if (userId === req.user._id) {
         res.send({ data: user })
         return User.findByIdAndUpdate(
@@ -126,20 +121,13 @@ const updateUserAvatar = (req, res) => {
         )
       }
       else {
-        res.status(403).send({ message: 'Você não tem permissão para atualizar as informações desse usuário' })
+        throw new ForbiddenError('Você não tem permissão para atualizar as informações desse usuário')
       }
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ocorreu ao atualizar avatar de usuário: Dados passados são inválidos' });
-      } if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: `Erro ao atualizar avatar do usuário: ${err}` });
-      }
-    });
+    .catch(err => next(err))
 };
 
 module.exports = {
   getAllUsers, getUser, getUserInfo, createUser, login, updateUser, updateUserAvatar,
 };
+
