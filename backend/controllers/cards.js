@@ -1,23 +1,25 @@
+const { isValidObjectId } = require('mongoose');
+const BadRequestError = require('../errors/BadRequestError')
+const ForbiddenError = require('../errors/ForbiddenError');
+const NotFoundError = require('../errors/NotFoundError');
 const Card = require('../models/card');
 
-function send404() {
-  const error = new Error('Nenhum cartão encontrado com esse id');
-  error.statusCode = 404;
-  throw error;
-}
-
-const getAllCards = (req, res) => {
+const getAllCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(500).send({ message: `Ocorreu um erro ao carregar todos os cartões: ${err}` }));
+    .catch(err => next(err))
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const cardId = req.params.cardId
+
+  if (!isValidObjectId(cardId)) {
+    throw new BadRequestError('ID passado é inválido')
+  }
 
   Card.findById(cardId)
     .orFail(() => {
-      send404();
+      throw new NotFoundError('Cartão com ID correspondete não encontrado');
     })
     .then((card) => {
       if (card.owner.valueOf() === req.user._id) {
@@ -25,69 +27,56 @@ const deleteCard = (req, res) => {
         return Card.findByIdAndRemove(cardId)
       }
       else {
-        res.status(403).send({ message: 'Você não tem autorização para deletar esse cartão' })
+        throw new ForbiddenError('Você não tem permissão para deletar esse cartão')
       }
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Id de cartão inválido' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: `Ocorreu um erro ao deletar cartão: ${err}` });
-      }
-    });
+    .catch(err => next(err))
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ocorreu ao criar o cartão: Dados passados são inválidos' + err });
-      }
-      res.status(500).send({ message: `Não foi possível criar cartão: ${err}` });
-    });
+    .catch((err) => next(err))
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
+  const cardId = req.params.cardId;
+
+  if (!isValidObjectId(cardId)) {
+    throw new BadRequestError('ID passado é inválido')
+  }
+
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {
-      send404();
+      throw new NotFoundError('Cartão com ID correspondente não encontrado');
     })
     .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: `Não foi possível curtir o cartão: ${err}` });
-      }
-    });
+    .catch(err => next(err))
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
+  const cardId = req.params.cardId;
+
+  if (!isValidObjectId(cardId)) {
+    throw new BadRequestError('ID passado é inválido')
+  }
+
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {
-      send404();
+      throw new NotFoundError('Cartão com ID correspondente não encontrado');
     })
     .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.statusCode === 404) {
-        res.status(404).send({ message: err.message });
-      } else {
-        res.status(500).send({ message: `Não foi possível descurtir o cartão: ${err}` });
-      }
-    });
+    .catch(err => next(err))
 };
 
 module.exports = {

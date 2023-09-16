@@ -8,12 +8,12 @@
           "_id"
         ]
       }
-    ]
-    /*"no-unused-vars": [
+    ],
+    "no-unused-vars": [
       "error",
       {
         "argsIgnorePattern": "next"
       }
-    ]*/
+    ]
   }
 }

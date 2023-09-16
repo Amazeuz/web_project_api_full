@@ -6,6 +6,10 @@ const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError')
 const NotFoundError = require('../errors/NotFoundError')
 
+function send404(message) {
+  throw new NotFoundError(message);
+}
+
 const getAllUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
@@ -20,10 +24,10 @@ const getUser = (req, res, next) => {
   }
 
   User.findById(userId)
+    .orFail(() => {
+      send404('Usuário com ID correspondente não encontrado');
+    })
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Usuário com ID correspondente não encontrado')
-      }
       res.send({ data: user })
     })
     .catch(err => next(err))
@@ -34,8 +38,6 @@ const getUserInfo = (req, res, next) => {
     .then(user => res.send({ data: user }))
     .catch(err => next(err))
 }
-
-
 
 const createUser = (req, res, next) => {
   const { email, name, about, avatar } = req.body;
@@ -80,10 +82,10 @@ const updateUser = (req, res, next) => {
   }
 
   User.findById(userId)
+    .orFail(() => {
+      send404('Usuário com ID correspondente não encontrado')
+    })
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Usuário com ID correspondente não encontrado')
-      }
       if (userId === req.user._id) {
         res.send({ data: user })
         return User.findByIdAndUpdate(
@@ -108,10 +110,10 @@ const updateUserAvatar = (req, res, next) => {
   }
 
   User.findById(userId)
+    .orFail(() => {
+      send404('Usuário com ID correspondente não encontrado')
+    })
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Usuário com ID correspondente não encontrado')
-      }
       if (userId === req.user._id) {
         res.send({ data: user })
         return User.findByIdAndUpdate(
