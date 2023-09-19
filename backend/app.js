@@ -3,6 +3,8 @@ const path = require('path');
 const mongoose = require('mongoose');
 const auth = require('./middleware/auth')
 const cors = require('cors')
+const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const errorHandler = require('./middleware/error-handler')
 const bodyParser = require('body-parser');
 const cardsRouter = require('./routes/cards');
@@ -20,8 +22,22 @@ app.use(cors({
   methods: 'GET'
 }))
 
-app.post('/signup', createUser);
-app.post('/signin', login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string()
+  })
+}), createUser);
+
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8)
+  })
+}), login);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -32,10 +48,10 @@ app.get('*', (req, res) => {
   res.send({ message: 'A solicitação não foi encontrada' });
 });
 
-
 mongoose.connect('mongodb://127.0.0.1:27017/aroundb')
   .catch((err) => console.error(`Erro de conexão ao MongoDB: ${err}`));
 
+app.use(errors())
 app.use(errorHandler);
 
 app.listen(PORT);
