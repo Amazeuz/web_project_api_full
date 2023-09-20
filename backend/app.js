@@ -5,6 +5,7 @@ const auth = require('./middleware/auth')
 const cors = require('cors')
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middleware/logger')
 const errorHandler = require('./middleware/error-handler')
 const bodyParser = require('body-parser');
 const cardsRouter = require('./routes/cards');
@@ -21,6 +22,8 @@ app.use(cors({
   origin: 'http://localhost:3000',
   methods: 'GET'
 }))
+
+app.use(requestLogger)
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -51,6 +54,7 @@ app.get('*', (req, res) => {
 mongoose.connect('mongodb://127.0.0.1:27017/aroundb')
   .catch((err) => console.error(`Erro de conexão ao MongoDB: ${err}`));
 
+app.use(errorLogger)
 app.use(errors())
 app.use(errorHandler);
 
