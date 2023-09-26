@@ -1,0 +1,19 @@
+.image-click__exit {
+  margin: auto 0 0 auto;
+  position: relative;
+  left: 40px;
+  width: 40px;
+  transform: rotate(-45deg);
+  cursor: pointer;
+  transition: opacity .4s;
+}
+
+@media screen and (max-width: 414px) {
+  .image-click__exit {
+    width: 30px;
+  }
+}
+
+.image-click__exit:hover {
+  opacity: .5;
+}

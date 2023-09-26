@@ -1,0 +1,21 @@
+html {
+  background-color: black;
+}
+
+.page {
+  height: 100vh;
+}
+
+.page>div {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (max-width: 894px) {
+  .page {
+    margin: auto;
+  }
+}

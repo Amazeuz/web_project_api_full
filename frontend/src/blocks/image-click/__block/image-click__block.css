@@ -1,0 +1,7 @@
+.image-click__block {
+  max-width: 60%;
+  max-height: 80%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}

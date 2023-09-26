@@ -1,0 +1,20 @@
+.header__container {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.header__container>div {
+  display: flex;
+  flex-direction: row;
+  color: white;
+  column-gap: 20px;
+}
+
+@media screen and (max-width: 600px) {
+  .header__container {
+    flex-direction: column;
+    row-gap: 20px;
+    align-items: center;
+  }
+}

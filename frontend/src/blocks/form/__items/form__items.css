@@ -1,0 +1,7 @@
+.form__items {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 50px;
+  margin: 34px auto;
+}

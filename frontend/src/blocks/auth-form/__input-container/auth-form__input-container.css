@@ -1,0 +1,8 @@
+.auth-form__input-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  row-gap: 30px;
+  margin-top: 40px;
+}

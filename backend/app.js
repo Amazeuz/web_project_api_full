@@ -12,7 +12,7 @@ const cardsRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
 const { createUser, login } = require('./controllers/users')
 
-const { PORT = 3000 } = process.env;
+const { PORT = 8080 } = process.env;
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));

@@ -1,0 +1,10 @@
+.profile__edit-button {
+  pointer-events: none;
+  cursor: pointer;
+  align-self: center;
+  visibility: hidden;
+}
+
+.profile__photo:hover ~ .profile__edit-button {
+  visibility: visible;
+}

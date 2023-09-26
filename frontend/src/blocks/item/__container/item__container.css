@@ -1,0 +1,14 @@
+.item__container {
+  width: 80%;
+  position: relative;
+  bottom: 22px;
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+}
+
+.item__container > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

@@ -1,0 +1,12 @@
+.item {
+  max-width: 282px;
+  height: 350px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 600px) {
+  .item {
+    margin: auto;
+  }
+}

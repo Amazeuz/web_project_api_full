@@ -1,0 +1,10 @@
+.header__title {
+  max-width: 20%;
+}
+
+@media screen and (max-width: 600px) {
+  .header__title {
+    max-width: 126px;
+    margin-left: 27px;
+  }
+}

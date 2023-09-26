@@ -1,0 +1,21 @@
+.form__exit {
+  width: 40px;
+  transform: rotate(-45deg);
+  cursor: pointer;
+  position: absolute;
+  left: 100%;
+  bottom: 100%;
+  transition: opacity .4s;
+}
+
+.form__exit:hover {
+  opacity: .5;
+}
+
+@media screen and (max-width: 414px) {
+  .form__exit {
+    width: 30px;
+    left: 90%;
+    top: -12%;
+  }
+}
