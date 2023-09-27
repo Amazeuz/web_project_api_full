@@ -5,8 +5,9 @@ const NotFoundError = require('../errors/NotFoundError');
 const Card = require('../models/card');
 
 const getAllCards = (req, res, next) => {
+  console.log('pegar cartões chamado')
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.send({ cards }))
     .catch(err => next(err))
 };
 
@@ -23,7 +24,7 @@ const deleteCard = (req, res, next) => {
     })
     .then((card) => {
       if (card.owner.valueOf() === req.user._id) {
-        res.send({ data: card })
+        res.send({ card })
         return Card.findByIdAndRemove(cardId)
       }
       else {
@@ -37,7 +38,7 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send({ card }))
     .catch((err) => next(err))
 };
 
@@ -56,7 +57,7 @@ const likeCard = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError('Cartão com ID correspondente não encontrado');
     })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send({ card }))
     .catch(err => next(err))
 };
 
@@ -75,7 +76,7 @@ const dislikeCard = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError('Cartão com ID correspondente não encontrado');
     })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send({ card }))
     .catch(err => next(err))
 };
 

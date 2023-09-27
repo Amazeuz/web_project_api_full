@@ -1,4 +1,4 @@
-import React, { useContext} from 'react';
+import React, { useContext } from 'react';
 import openEditPopupSrc from '../images/vector__edit.svg'
 import openAddPopupSrc from '../images/vector__add.svg'
 import photoEditIcon from '../images/profile-photo-edit.svg'
@@ -37,7 +37,7 @@ function Main(props) {
             onCardDelete={props.onCardDelete}
             onCardClick={props.onCardClick}
           />
-          ))
+        ))
         }
       </section>
     </main>

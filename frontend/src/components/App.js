@@ -39,7 +39,7 @@ export default function App() {
 
   useEffect(() => {
     api.getServerCards().then(data => {
-      setCards(data)
+      setCards(data.cards)
     })
   }, [])
 

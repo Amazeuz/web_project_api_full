@@ -29,7 +29,6 @@ class Api {
     })
       .then((res) => {
         if (res.ok) {
-          console.log(res)
           return res.json();
         }
         return Promise.reject(`Algo deu errado: ${res.status}`);
@@ -145,9 +144,9 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "http://localhost:3000",
+  baseUrl: "http://localhost:8080",
   headers: {
-    authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGZlMDY5YjA1NTYyYjQ5OTJmNGMwYjkiLCJpYXQiOjE2OTUxNTE2MTksImV4cCI6MTY5NTc1NjQxOX0.T5ytWGitZmIw_h5yw9tdl6JNfFxE06fJ2gGU9gAU6qQ",
+    authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGZlMDY5YjA1NTYyYjQ5OTJmNGMwYjkiLCJpYXQiOjE2OTU3NjQ2NzIsImV4cCI6MTY5NjM2OTQ3Mn0.n1H8qCg6BTAidQEZ4ZoKQ044oZ121BuzjZfygihsGpk",
     "Content-Type": "application/json"
   }
 });
