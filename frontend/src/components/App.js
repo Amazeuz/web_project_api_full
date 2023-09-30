@@ -25,9 +25,9 @@ export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(userId => userId === currentUser._id);
 
-    api.toggleCardLike(card._id, !isLiked).then((newCard) => {
+    api.toggleCardLike(card._id, isLiked).then((newCard) => {
       setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
     });
   }
@@ -38,18 +38,18 @@ export default function App() {
   }
 
   useEffect(() => {
-    api.getServerCards().then(data => {
-      setCards(data.cards)
+    api.getServerCards().then(cards => {
+      setCards(cards)
     })
   }, [])
 
   useEffect(() => {
-    api.loadUserInfo().then((data) => {
-      setCurrentUser(data)
+    api.loadUserInfo().then((user) => {
+      setCurrentUser(user)
       if (isValidToken()) {
         isValidToken()
           .then((result) => {
-            setCurrentUser(prev => ({ ...prev, email: result.data.email }))
+            setCurrentUser(prev => ({ ...prev, email: result.email }))
           })
       }
     });

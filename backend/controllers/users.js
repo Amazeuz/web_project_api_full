@@ -35,7 +35,7 @@ const getUser = (req, res, next) => {
 
 const getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
-    .then(user => res.send({ data: user }))
+    .then(user => res.send(user))
     .catch(err => next(err))
 }
 

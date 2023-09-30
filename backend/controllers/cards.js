@@ -5,9 +5,8 @@ const NotFoundError = require('../errors/NotFoundError');
 const Card = require('../models/card');
 
 const getAllCards = (req, res, next) => {
-  console.log('pegar cartões chamado')
   Card.find({})
-    .then((cards) => res.send({ cards }))
+    .then((cards) => res.send(cards))
     .catch(err => next(err))
 };
 
@@ -57,7 +56,7 @@ const likeCard = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError('Cartão com ID correspondente não encontrado');
     })
-    .then((card) => res.send({ card }))
+    .then((card) => res.send(card))
     .catch(err => next(err))
 };
 
@@ -76,7 +75,7 @@ const dislikeCard = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError('Cartão com ID correspondente não encontrado');
     })
-    .then((card) => res.send({ card }))
+    .then((card) => res.send(card))
     .catch(err => next(err))
 };
 
