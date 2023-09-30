@@ -39,7 +39,7 @@ export default function App() {
 
   useEffect(() => {
     api.getServerCards().then(cards => {
-      setCards(cards)
+      setCards(cards.reverse())
     })
   }, [])
 

@@ -20,7 +20,7 @@ app.use(express.json());
 
 app.use(cors({
   origin: 'http://localhost:3000',
-  methods: ['GET', 'PUT', 'PATCH', 'DELETE', 'POST']
+  methods: '*',
 }))
 
 app.use(requestLogger)

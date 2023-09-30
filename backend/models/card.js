@@ -11,7 +11,7 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (value) => /^(https?){1,}:\/\/[-a-zA-Z0-9.+_~:/?%#@!$&'()*+,;=]{1,}\.com((\/[-a-zA-Z0-9.+_~:/?%#@!$&'()*+,;=]{1,})?){1,}\/?/.test(value),
+      validator: (value) => /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/.test(value),
       message: (props) => `${props.value} Link de cartão inválido.`,
     },
   },

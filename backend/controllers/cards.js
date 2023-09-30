@@ -34,10 +34,11 @@ const deleteCard = (req, res, next) => {
 };
 
 const createCard = (req, res, next) => {
+  console.log('CREATE CARD CHAMADAÇO')
   const { name, link } = req.body;
-
+  console.log(name, link)
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ card }))
+    .then((card) => res.send(card))
     .catch((err) => next(err))
 };
 

@@ -39,6 +39,7 @@ class Api {
   }
 
   addServerCard(name, link) {
+    console.log(name, link)
     return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: {
@@ -52,6 +53,7 @@ class Api {
     })
       .then((res) => {
         if (res.ok) {
+          console.log(res)
           return res.json();
         }
         return Promise.reject(`Algo deu errado: ${res.status}`);
