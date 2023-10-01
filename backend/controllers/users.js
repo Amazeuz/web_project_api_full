@@ -75,11 +75,7 @@ const login = (req, res, next) => {
 }
 
 const updateUser = (req, res, next) => {
-  const userId = req.params.id !== 'me' ? req.params.id : req.user._id;
-
-  if (!isValidObjectId(userId)) {
-    throw new BadRequestError('Dados passados são inválidos')
-  }
+  const userId = req.user._id;
 
   User.findById(userId)
     .orFail(() => {
@@ -87,7 +83,6 @@ const updateUser = (req, res, next) => {
     })
     .then((user) => {
       if (userId === req.user._id) {
-        res.send({ data: user })
         return User.findByIdAndUpdate(
           req.user._id,
           { name: req.body.name, about: req.body.about },
@@ -103,11 +98,7 @@ const updateUser = (req, res, next) => {
 
 
 const updateUserAvatar = (req, res, next) => {
-  const userId = req.params.id !== 'me' ? req.params.id : req.user._id;
-
-  if (!isValidObjectId(userId)) {
-    throw new BadRequestError('Dados passados são inválidos')
-  }
+  const userId = req.user._id;
 
   User.findById(userId)
     .orFail(() => {
@@ -115,7 +106,7 @@ const updateUserAvatar = (req, res, next) => {
     })
     .then((user) => {
       if (userId === req.user._id) {
-        res.send({ data: user })
+        res.send(user)
         return User.findByIdAndUpdate(
           req.user._id,
           { avatar: req.body.avatar },

@@ -17,9 +17,9 @@ export default function EditProfilePopup(props) {
   }
 
   function handleSubmit(evt) {
-     evt.preventDefault();
+    evt.preventDefault();
 
-    if (name.replace(/ /g,'').length > 0 && about.replace(/ /g,'').length > 0) {
+    if (name.replace(/ /g, '').length > 0 && about.replace(/ /g, '').length > 0) {
       props.onUpdateUser({
         name,
         about
