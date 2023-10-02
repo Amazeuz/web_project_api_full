@@ -10,6 +10,7 @@ export const register = (email, password) => {
     body: JSON.stringify({ email, password })
   })
     .then((res) => {
+      console.log(res)
       if (res.ok) {
         return res.ok;
       }
@@ -22,6 +23,7 @@ export const register = (email, password) => {
     })
 };
 export const authorize = (email, password) => {
+  console.log(email, password)
   return fetch(`${BASE_URL}/signin`, {
     method: 'POST',
     headers: {

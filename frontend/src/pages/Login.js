@@ -37,8 +37,8 @@ export default function Login({ handleLogin, isValidToken }) {
       .then((res) => {
         if (res !== undefined) {
           localStorage.setItem('jwt', res.token);
-          handleLogin();
-          history.push('/');
+          setTimeout(() => { handleLogin() }, 1000)
+          window.location.reload();
         }
         else {
           setLoginPopupClick(true);

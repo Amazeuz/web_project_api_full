@@ -148,7 +148,7 @@ class Api {
 const api = new Api({
   baseUrl: "http://localhost:8080",
   headers: {
-    authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGZlMDY5YjA1NTYyYjQ5OTJmNGMwYjkiLCJpYXQiOjE2OTU3NjQ2NzIsImV4cCI6MTY5NjM2OTQ3Mn0.n1H8qCg6BTAidQEZ4ZoKQ044oZ121BuzjZfygihsGpk",
+    authorization: `Bearer ${localStorage.getItem('jwt')}`,
     "Content-Type": "application/json"
   }
 });
