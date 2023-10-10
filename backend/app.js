@@ -12,7 +12,7 @@ const cardsRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
 const { createUser, login } = require('./controllers/users')
 
-const { PORT = 8080 } = process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
@@ -23,11 +23,11 @@ app.options('*', cors());
 
 app.use(requestLogger)
 
-app.get('/crash-test', () => {
+/*app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('O servidor travará agora');
   }, 0);
-});
+});*/
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
