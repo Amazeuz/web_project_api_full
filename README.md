@@ -57,3 +57,4 @@ Funções da API:
 - DELETE /cards/cardId/likes Função de descurtir um cartão
 
 Link de vídeo demonstrativo: https://youtu.be/m_HzaOmqyyA
+(No vídeo, o projeto está sendo rodado localmente, mas as funcionalidades são as mesmas no servidor)
