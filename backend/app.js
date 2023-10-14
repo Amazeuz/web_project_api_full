@@ -1,8 +1,9 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const auth = require('./middleware/auth')
-const cors = require('cors')
+const auth = require('./middleware/auth');
+const cors = require('cors');
+require('dotenv').config();
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middleware/logger')
@@ -23,11 +24,11 @@ app.options('*', cors());
 
 app.use(requestLogger)
 
-/*app.get('/crash-test', () => {
+app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('O servidor travará agora');
   }, 0);
-});*/
+});
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
