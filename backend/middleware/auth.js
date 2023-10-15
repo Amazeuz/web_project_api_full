@@ -4,22 +4,21 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res.status(403).send({ message: 'Autorização necessária' })
+    return res.status(403).send({ message: 'Autorização necessária' });
   }
 
-  const token = authorization.replace('Bearer ', '')
+  const token = authorization.replace('Bearer ', '');
   let payload;
 
-  const { NODE_ENV, JWT_SECRET } = process.env
+  const { NODE_ENV, JWT_SECRET } = process.env;
 
   try {
-    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'key-secret')
-  }
-  catch (err) {
-    return res.status(403).send({ message: 'Autorização necessária' })
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'key-secret');
+  } catch (err) {
+    return res.status(403).send({ message: 'Autorização necessária' });
   }
 
   req.user = payload;
 
   next();
-}
+};
