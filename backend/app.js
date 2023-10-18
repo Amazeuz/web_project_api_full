@@ -51,7 +51,7 @@ app.get('*', (req, res) => {
 });
 
 mongoose.connect('mongodb://127.0.0.1:27017/aroundb')
-  .catch((err) => console.error(`Erro de conexão ao MongoDB: ${err}`));
+  .catch((err) => { throw new Error(`Erro de conexão ao MongoDB: ${err}`); });
 
 app.use(errorLogger);
 app.use(errors());

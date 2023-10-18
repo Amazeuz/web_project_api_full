@@ -4,18 +4,29 @@ const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 const Card = require('../models/card');
 
+function handleCardValidity(cardId) {
+  if (!isValidObjectId(cardId)) {
+    throw new BadRequestError('ID passado é inválido');
+  }
+}
+
 const getAllCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
     .catch((err) => next(err));
 };
 
+const createCard = (req, res, next) => {
+  const { name, link } = req.body;
+  Card.create({ name, link, owner: req.user._id })
+    .then((card) => res.send(card))
+    .catch((err) => next(err));
+};
+
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
-  if (!isValidObjectId(cardId)) {
-    throw new BadRequestError('ID passado é inválido');
-  }
+  handleCardValidity(cardId);
 
   Card.findById(cardId)
     .orFail(() => {
@@ -32,19 +43,10 @@ const deleteCard = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-const createCard = (req, res, next) => {
-  const { name, link } = req.body;
-  Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send(card))
-    .catch((err) => next(err));
-};
-
 const likeCard = (req, res, next) => {
   const { cardId } = req.params;
 
-  if (!isValidObjectId(cardId)) {
-    throw new BadRequestError('ID passado é inválido');
-  }
+  handleCardValidity(cardId);
 
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -61,9 +63,7 @@ const likeCard = (req, res, next) => {
 const dislikeCard = (req, res, next) => {
   const { cardId } = req.params;
 
-  if (!isValidObjectId(cardId)) {
-    throw new BadRequestError('ID passado é inválido');
-  }
+  handleCardValidity(cardId);
 
   Card.findByIdAndUpdate(
     req.params.cardId,

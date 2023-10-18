@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: (value) => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(value),
+      validator: (value) => /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(value),
       message: (props) => `${props.value} Email inválido.`,
     },
   },
